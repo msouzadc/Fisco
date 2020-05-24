@@ -10,7 +10,8 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import com.msc.fisco.modelo.Usuario;
+
+import com.msc.modelo.Usuario;
 
 @Named
 @RequestScoped
@@ -28,21 +29,41 @@ public class UsuarioDao implements Serializable {
 	@Inject
 	private EntityManager em;
 	
-	public boolean existe(Usuario usuario) {
+	public void adiciona(Usuario t) {
+		dao.adiciona(t);
+	}
+
+	public void atualiza(Usuario t){
+		em.merge(t);
+	}
+
+	public void remove(Usuario t) {
+		dao.remove(t);
+	}
+
+	public Usuario buscaPorId(Long id) {
+		return dao.buscaPorId(id);
+	}
+
+	public List<Usuario> listaTodosPaginada(int firstResult, int maxResults) {
+		return dao.listaTodosPaginada(firstResult, maxResults);
+	}
+	
+	public Usuario buscaPorLogin (String login) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" select u from Usuario u ");
+		sb.append(" where");
+		sb.append("		u.login = :pLogin");
+		TypedQuery<Usuario> query = em.createQuery(sb.toString(), Usuario.class);
 		
-		TypedQuery<Usuario> query = em.createQuery(
-				  " select u from Usuario u "
-				+ " where u.email = :pLogin and u.senha = :pSenha", Usuario.class);
+		query.setParameter("pLogin", login);
 		
-		query.setParameter("pLogin", usuario.getLogin());
-		query.setParameter("pSenha", usuario.getSenha());
 		try {
-			@SuppressWarnings("unused")
-			Usuario resultado = query.getSingleResult();
-			return true;
-		} catch (NoResultException ex) {
-			return false;
+			return query.getSingleResult();
+		}catch (NoResultException e) {
+			return null;
 		}
+		
 	}
 	
 	public Usuario buscaUsuarioPelaAutenticacao(Usuario usuario) {
@@ -62,37 +83,5 @@ public class UsuarioDao implements Serializable {
 			return null;
 		}
 	}
-
-	public void adiciona(Usuario usuario) {
-		dao.adiciona(usuario);
-	}
-
-	public void atualiza(Usuario usuario){
-		em.merge(usuario);
-	}
-
-	public void remove(Usuario usuario) {
-		dao.remove(usuario);
-	}
-
-	public Usuario buscaPorId(Long id) {
-		return dao.buscaPorId(id);
-	}
-
-	public List<Usuario> listaTodosPaginada(int firstResult, int maxResults) {
-		return dao.listaTodosPaginada(firstResult, maxResults);
-	}
-
-	public Usuario buscaPorEmail(String email) {
-		String jpql = " select u from Usuario u where u.email = :pEmail";
-		TypedQuery<Usuario> query = em.createQuery(jpql, Usuario.class);
-		query.setParameter("pEmail", email.trim().toLowerCase());
-		try {
-			return query.getSingleResult();
-		} catch (NoResultException ex) {
-			return null;
-		}
-	}
-
 
 }

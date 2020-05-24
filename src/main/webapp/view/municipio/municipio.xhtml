@@ -5,7 +5,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
 	<meta charset="UTF-8" />
-	<title>Projeto Fisco - Menu</title>
+	<title>Projeto Fisco - Municipio</title>
 	<link type="text/css" rel="stylesheet"	href="#{facesContext.externalContext.requestContextPath}/resources/css/estilo.css" />
 </h:head>
 
@@ -13,7 +13,6 @@
 	<h:form id="frmMenu" >
 		<h1>Usuário: #{loginBean.usuario.login}</h1>
 		<p:panel header="Projeto Fisco - Menu" style="width: 400px;">
-		<p:commandButton value="Municipio" action="#{municipioBean.desloga}" process="@this"/>
 		<p:commandButton value="Desloga" action="#{loginBean.desloga}" process="@this"/>
 		</p:panel>
 	</h:form>
